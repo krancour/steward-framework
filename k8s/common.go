@@ -13,3 +13,14 @@ const (
 func resourceAPIVersion(v string) string {
 	return fmt.Sprintf("%s/%s", resourceAPIVersionBase, v)
 }
+
+func getTPRPath(namespace, tprName string) []string {
+	return []string{
+		"apis",
+		resourceAPIVersionBase,
+		apiVersionV1,
+		"namespaces",
+		namespace,
+		tprName,
+	}
+}
