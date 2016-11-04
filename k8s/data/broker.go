@@ -5,6 +5,10 @@ import (
 	"k8s.io/client-go/1.4/pkg/api/v1"
 )
 
+const (
+	BrokerTPRName = "Broker"
+)
+
 type BrokerState string
 
 const (
