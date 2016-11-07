@@ -1,6 +1,7 @@
 package data
 
 import (
+	"github.com/deis/steward-framework/lib"
 	"k8s.io/client-go/1.4/pkg/api"
 	"k8s.io/client-go/1.4/pkg/api/unversioned"
 	"k8s.io/client-go/1.4/pkg/api/v1"
@@ -23,9 +24,9 @@ type Binding struct {
 }
 
 type BindingSpec struct {
-	InstanceRef api.ObjectReference    `json:"instance_ref"`
-	Parameters  map[string]interface{} `json:"parameters"`
-	SecretName  string                 `json:"secret_name"`
+	InstanceRef api.ObjectReference `json:"instance_ref"`
+	Parameters  lib.JSONObject      `json:"parameters"`
+	SecretName  string              `json:"secret_name"`
 }
 
 type BindingStatus struct {
