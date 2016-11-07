@@ -15,8 +15,8 @@ const (
 )
 
 type Binding struct {
-	kunversioned.TypeMeta
-	kapi.ObjectMeta
+	unversioned.TypeMeta
+	api.ObjectMeta
 
 	Spec   BindingSpec
 	Status BindingStatus
