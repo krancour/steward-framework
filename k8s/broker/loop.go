@@ -36,9 +36,6 @@ func RunLoop(ctx context.Context, fn WatchBrokerFunc, cataloger framework.Catalo
 					return err
 				}
 			}
-			if err := handleEvt(evt); err != nil {
-				return err
-			}
 		}
 	}
 }
@@ -52,7 +49,13 @@ func handleAddBroker(ctx, cataloger framework.Cataloger, evt watch.Event) error 
 	if err != nil {
 		return err
 	}
-	// TODO: write services to ServiceClasses
+
+	// sClasses := translateServiceClasses(svcs)
+	// TODO: write sClasses to k8s
 	return nil
 
+}
+
+func translateServiceClasses(svcs []*framework.Service) []*data.ServiceClass {
+	return nil
 }
