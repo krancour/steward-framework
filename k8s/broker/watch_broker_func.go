@@ -23,3 +23,14 @@ func NewK8sWatchBrokerFunc(restIface rest.Interface) WatchBrokerFunc {
 		return restIface.Get().AbsPath(url...).Watch()
 	}
 }
+
+func newFakeWatchBrokerFunc(retErr error) (WatchBrokerFunc, *watch.FakeWatcher) {
+	fake := watch.NewFake()
+	fn := func(namespace string) (watch.Interface, error) {
+		if retErr != nil {
+			return nil, retErr
+		}
+		return fake, nil
+	}
+	return fn, fake
+}
