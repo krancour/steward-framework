@@ -33,5 +33,17 @@ func TestServiceClassID(t *testing.T) {
 }
 
 func TestTranslatePlans(t *testing.T) {
-
+	plans := []framework.ServicePlan{
+		{ID: "ID1", Name: "name1", Description: "descr1", Free: true},
+		{ID: "ID2", Name: "name2", Description: "descr2", Free: false},
+		{ID: "ID3", Name: "name3", Description: "descr3", Free: true},
+	}
+	translated := translatePlans(plans)
+	assert.Equal(t, len(translated), len(plans), "number of translated plans")
+	for i, plan := range plans {
+		tr := translated[i]
+		assert.Equal(t, tr.ID, plan.ID, "ID")
+		assert.Equal(t, tr.Name, plan.Name, "name")
+		assert.Equal(t, tr.Description, plan.Description, "description")
+	}
 }
