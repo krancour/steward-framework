@@ -3,6 +3,7 @@ package broker
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/arschles/assert"
 	"github.com/deis/steward-framework"
@@ -18,6 +19,32 @@ func TestRunLoopCancel(t *testing.T) {
 	watcher, fakeWatcher := newFakeWatchBrokerFunc(nil)
 	assert.Err(t, ErrCancelled, RunLoop(ctx, "testns", watcher, nil, nil))
 	assert.True(t, fakeWatcher.IsStopped(), "watcher isn't stopped")
+}
+
+func TestRunLoopSuccess(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	watcher, fakeWatcher := newFakeWatchBrokerFunc(nil)
+	cataloger := fake.Cataloger{}
+	createSvcClass, createdSvcClasses := newFakeCreateServiceClassFunc(nil)
+
+	errCh := make(chan error)
+	go func() {
+		errCh <- RunLoop(ctx, "testns", watcher, cataloger, createSvcClass)
+	}()
+
+	fakeWatcher.Add(&data.Broker{})
+	fakeWatcher.Stop()
+
+	const errTimeout = 100 * time.Millisecond
+	select {
+	case err := <-errCh:
+		assert.Equal(t, len(*createdSvcClasses), 0, "number of created service classes")
+		assert.Err(t, ErrWatchClosed, err)
+	case <-time.After(errTimeout):
+		t.Fatalf("RunLoop didn't return after %s", errTimeout)
+	}
+
 }
 
 func TestHandleAddBrokerNotABroker(t *testing.T) {

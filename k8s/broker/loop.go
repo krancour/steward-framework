@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	ErrCancelled  = errors.New("stopped")
-	ErrNotABroker = errors.New("not a broker")
+	ErrCancelled   = errors.New("stopped")
+	ErrNotABroker  = errors.New("not a broker")
+	ErrWatchClosed = errors.New("watch closed")
 )
 
 // RunLoop starts a blocking control loop that watches and takes action on broker resources
@@ -31,7 +32,10 @@ func RunLoop(
 		select {
 		case <-ctx.Done():
 			return ErrCancelled
-		case evt := <-ch:
+		case evt, open := <-ch:
+			if !open {
+				return ErrWatchClosed
+			}
 			switch evt.Type {
 			case watch.Added:
 				if err := handleAddBroker(ctx, cataloger, createSvcClassFunc, evt); err != nil {
