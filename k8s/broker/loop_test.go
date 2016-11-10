@@ -12,6 +12,14 @@ import (
 	"k8s.io/client-go/pkg/watch"
 )
 
+func TestRunLoopCancel(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	watcher, fakeWatcher := newFakeWatchBrokerFunc(nil)
+	assert.Err(t, ErrCancelled, RunLoop(ctx, "testns", watcher, nil, nil))
+	assert.True(t, fakeWatcher.IsStopped(), "watcher isn't stopped")
+}
+
 func TestHandleAddBrokerNotABroker(t *testing.T) {
 	ctx := context.Background()
 	cataloger := fake.Cataloger{}
@@ -52,5 +60,4 @@ func TestHandleAddBrokerSuccess(t *testing.T) {
 	err := handleAddBroker(ctx, cataloger, createSvcClass, evt)
 	assert.NoErr(t, err)
 	assert.Equal(t, len(*createdSvcClasses), len(cataloger.Services), "number of create svc classes")
-
 }
