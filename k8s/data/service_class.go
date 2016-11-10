@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	ServiceClassKind = "ServiceClass"
+	ServiceClassKind       = "ServiceClass"
+	ServiceClassKindPlural = "ServiceClasses"
 )
 
 type ServiceClass struct {

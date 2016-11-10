@@ -17,10 +17,11 @@ var (
 // RunLoop starts a blocking control loop that watches and takes action on broker resources
 func RunLoop(
 	ctx context.Context,
+	namespace string,
 	fn WatchBrokerFunc,
 	cataloger framework.Cataloger,
 	createSvcClassFunc CreateServiceClassFunc) error {
-	watcher, err := fn()
+	watcher, err := fn(namespace)
 	if err != nil {
 		return err
 	}
