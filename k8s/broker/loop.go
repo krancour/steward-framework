@@ -14,11 +14,12 @@ var (
 	ErrNotABroker = errors.New("not a broker")
 )
 
-// WatchBrokerFunc is the function that returns a watch interface for broker resources
-type WatchBrokerFunc func() (watch.Interface, error)
-
 // RunLoop starts a blocking control loop that watches and takes action on broker resources
-func RunLoop(ctx context.Context, fn WatchBrokerFunc, cataloger framework.Cataloger) error {
+func RunLoop(
+	ctx context.Context,
+	fn WatchBrokerFunc,
+	cataloger framework.Cataloger,
+	createSvcClassFunc CreateServiceClassFunc) error {
 	watcher, err := fn()
 	if err != nil {
 		return err
@@ -32,7 +33,7 @@ func RunLoop(ctx context.Context, fn WatchBrokerFunc, cataloger framework.Catalo
 		case evt := <-ch:
 			switch evt.Type {
 			case watch.Added:
-				if err := handleAddBroker(cataloger, evt); err != nil {
+				if err := handleAddBroker(ctx, cataloger, createSvcClassFunc, evt); err != nil {
 					return err
 				}
 			}
@@ -40,8 +41,12 @@ func RunLoop(ctx context.Context, fn WatchBrokerFunc, cataloger framework.Catalo
 	}
 }
 
-func handleAddBroker(ctx, cataloger framework.Cataloger, evt watch.Event) error {
-	broker, ok := evt.Object.(data.Broker)
+func handleAddBroker(
+	ctx context.Context,
+	cataloger framework.Cataloger,
+	createServiceClassFunc CreateServiceClassFunc,
+	evt watch.Event) error {
+	broker, ok := evt.Object.(*data.Broker)
 	if !ok {
 		return ErrNotABroker
 	}
@@ -50,12 +55,14 @@ func handleAddBroker(ctx, cataloger framework.Cataloger, evt watch.Event) error 
 		return err
 	}
 
-	// sClasses := translateServiceClasses(svcs)
-	// TODO: write sClasses to k8s
-	return nil
-
-}
-
-func translateServiceClasses(svcs []*framework.Service) []*data.ServiceClass {
+	sClasses, err := translateServiceClasses(broker, svcs)
+	if err != nil {
+		return err
+	}
+	for _, sClass := range sClasses {
+		if err := createServiceClassFunc(sClass); err != nil {
+			return err
+		}
+	}
 	return nil
 }
