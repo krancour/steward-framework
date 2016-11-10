@@ -36,7 +36,7 @@ func StartControlLoops(
 			errCh <- err
 		}
 	}()
-	// TODO: Start broker / catalog publish loop
+
 	// TODO: Start instance loop
 	// TODO: Start binding loop
 
