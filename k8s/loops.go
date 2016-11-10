@@ -18,7 +18,7 @@ func StartControlLoops(
 	k8sClient *kubernetes.Clientset,
 	cataloger framework.Cataloger,
 	lifecycler framework.Lifecycler,
-	brokerNamespace string,
+	globalNamespace string,
 	errCh chan<- error,
 ) {
 	restClient := k8sClient.CoreClient.RESTClient()
@@ -28,7 +28,7 @@ func StartControlLoops(
 		createSvcClassFn := broker.NewK8sCreateServiceClassFunc(restClient)
 		if err := broker.RunLoop(
 			ctx,
-			brokerNamespace,
+			globalNamespace,
 			watchBrokerFn,
 			cataloger,
 			createSvcClassFn,

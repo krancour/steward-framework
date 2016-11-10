@@ -12,6 +12,12 @@ import (
 	"k8s.io/client-go/rest"
 )
 
+const (
+	// GlobalNamespace is the namespace that steward-framework uses for globally namespaced resources,
+	// including Broker and ServiceClass
+	GlobalNamespace = "steward"
+)
+
 // Run starts all event and control loops. Steward Framework implementations should invoke this
 // function LAST in their main() function and can rely upon this function to block program
 // their program from exiting until a fatal error is encountered.
@@ -43,6 +49,7 @@ func Run(
 		k8sClient,
 		cataloger,
 		lifecycler,
+		GlobalNamespace,
 		errCh,
 	)
 
