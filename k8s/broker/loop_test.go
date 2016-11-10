@@ -13,6 +13,26 @@ import (
 	"k8s.io/client-go/pkg/watch"
 )
 
+func fakeCataloger() fake.Cataloger {
+	return fake.Cataloger{
+		Services: []*framework.Service{
+			&framework.Service{
+				ServiceInfo: framework.ServiceInfo{
+					Name:          "testName",
+					ID:            "testID",
+					Description:   "testDescr",
+					PlanUpdatable: true,
+				},
+				Plans: []framework.ServicePlan{
+					framework.ServicePlan{ID: "tid1", Name: "tName1", Description: "tDesc1", Free: true},
+					framework.ServicePlan{ID: "tid2", Name: "tName2", Description: "tDesc2", Free: false},
+					framework.ServicePlan{ID: "tid3", Name: "tName3", Description: "tDesc3", Free: true},
+				},
+			},
+		},
+	}
+}
+
 func TestRunLoopCancel(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
@@ -25,7 +45,7 @@ func TestRunLoopSuccess(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	watcher, fakeWatcher := newFakeWatchBrokerFunc(nil)
-	cataloger := fake.Cataloger{}
+	cataloger := fakeCataloger()
 	createSvcClass, createdSvcClasses := newFakeCreateServiceClassFunc(nil)
 
 	errCh := make(chan error)
@@ -39,7 +59,7 @@ func TestRunLoopSuccess(t *testing.T) {
 	const errTimeout = 100 * time.Millisecond
 	select {
 	case err := <-errCh:
-		assert.Equal(t, len(*createdSvcClasses), 0, "number of created service classes")
+		assert.Equal(t, len(*createdSvcClasses), len(cataloger.Services), "number of created service classes")
 		assert.Err(t, ErrWatchClosed, err)
 	case <-time.After(errTimeout):
 		t.Fatalf("RunLoop didn't return after %s", errTimeout)
@@ -62,23 +82,7 @@ func TestHandleAddBrokerNotABroker(t *testing.T) {
 
 func TestHandleAddBrokerSuccess(t *testing.T) {
 	ctx := context.Background()
-	cataloger := fake.Cataloger{
-		Services: []*framework.Service{
-			&framework.Service{
-				ServiceInfo: framework.ServiceInfo{
-					Name:          "testName",
-					ID:            "testID",
-					Description:   "testDescr",
-					PlanUpdatable: true,
-				},
-				Plans: []framework.ServicePlan{
-					framework.ServicePlan{ID: "tid1", Name: "tName1", Description: "tDesc1", Free: true},
-					framework.ServicePlan{ID: "tid2", Name: "tName2", Description: "tDesc2", Free: false},
-					framework.ServicePlan{ID: "tid3", Name: "tName3", Description: "tDesc3", Free: true},
-				},
-			},
-		},
-	}
+	cataloger := fakeCataloger()
 	createSvcClass, createdSvcClasses := newFakeCreateServiceClassFunc(nil)
 	evt := watch.Event{
 		Type:   watch.Added,
