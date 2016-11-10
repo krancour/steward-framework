@@ -25,7 +25,7 @@ func NewK8sCreateServiceClassFunc(restIface rest.Interface) CreateServiceClassFu
 
 // returns the function and a mutable slice of classes that were created. if retErr != nil,
 // it is always returned by the function and the returned slice is never modified
-func newFakeCreateServiceClassFunc(retErr error) (CreateServiceClassFunc, []*data.ServiceClass) {
+func newFakeCreateServiceClassFunc(retErr error) (CreateServiceClassFunc, *[]*data.ServiceClass) {
 	createdClasses := []*data.ServiceClass{}
 	retFn := func(sClass *data.ServiceClass) error {
 		if retErr != nil {
@@ -34,5 +34,5 @@ func newFakeCreateServiceClassFunc(retErr error) (CreateServiceClassFunc, []*dat
 		createdClasses = append(createdClasses, sClass)
 		return nil
 	}
-	return retFn, createdClasses
+	return retFn, &createdClasses
 }

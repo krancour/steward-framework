@@ -5,7 +5,6 @@ import (
 
 	"github.com/deis/steward-framework"
 	"github.com/deis/steward-framework/k8s/data"
-	"k8s.io/client-go/pkg/api"
 	"k8s.io/client-go/pkg/api/unversioned"
 	"k8s.io/client-go/pkg/api/v1"
 )
@@ -14,10 +13,7 @@ func translateServiceClasses(
 	parentBroker *data.Broker,
 	svcs []*framework.Service) ([]*data.ServiceClass, error) {
 
-	brokerRef, err := api.GetReference(parentBroker)
-	if err != nil {
-		return nil, err
-	}
+	brokerRef := getObjectReference(parentBroker)
 	ret := make([]*data.ServiceClass, len(svcs))
 	for i, svc := range svcs {
 		ret[i] = &data.ServiceClass{

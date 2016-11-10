@@ -45,7 +45,7 @@ func RunLoop(
 func handleAddBroker(
 	ctx context.Context,
 	cataloger framework.Cataloger,
-	createServiceClassFunc CreateServiceClassFunc,
+	createServiceClass CreateServiceClassFunc,
 	evt watch.Event) error {
 	broker, ok := evt.Object.(*data.Broker)
 	if !ok {
@@ -61,7 +61,7 @@ func handleAddBroker(
 		return err
 	}
 	for _, sClass := range sClasses {
-		if err := createServiceClassFunc(sClass); err != nil {
+		if err := createServiceClass(sClass); err != nil {
 			return err
 		}
 	}
