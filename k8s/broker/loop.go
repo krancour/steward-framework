@@ -34,6 +34,7 @@ func RunLoop(
 			return ErrCancelled
 		case evt, open := <-ch:
 			if !open {
+				logger.Errorf("the watch channel was closed")
 				return ErrWatchClosed
 			}
 			switch evt.Type {
