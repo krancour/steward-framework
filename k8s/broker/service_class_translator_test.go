@@ -7,8 +7,25 @@ import (
 	"github.com/arschles/assert"
 	"github.com/deis/steward-framework"
 	"github.com/deis/steward-framework/k8s/data"
+	"k8s.io/client-go/pkg/api/unversioned"
 	"k8s.io/client-go/pkg/api/v1"
 )
+
+func TestTranslateServiceClass(t *testing.T) {
+	parentBroker := &data.Broker{
+		TypeMeta: unversioned.TypeMeta{},
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "testName",
+			Namespace: "testNS",
+		},
+	}
+	svc := &framework.Service{}
+	sClass := translateServiceClass(parentBroker, svc)
+	assert.Equal(t, sClass.Kind, data.ServiceClassKind, "kind")
+	assert.Equal(t, sClass.Name, serviceClassName(parentBroker, svc), "name")
+	assert.Equal(t, sClass.Namespace, parentBroker.Namespace, "namespace")
+	assert.Equal(t, len(sClass.Plans), len(svc.Plans), "number of plans")
+}
 
 func TestServiceClassName(t *testing.T) {
 	broker := &data.Broker{
