@@ -40,7 +40,8 @@ func RunLoop(
 			switch evt.Type {
 			case watch.Added:
 				if err := handleAddBroker(ctx, cataloger, createSvcClassFunc, evt); err != nil {
-					return err
+					// TODO: try the handler again
+					logger.Errorf("add broker event handler failed (%s)", err)
 				}
 			}
 		}
