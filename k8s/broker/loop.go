@@ -61,11 +61,8 @@ func handleAddBroker(
 		return err
 	}
 
-	sClasses, err := translateServiceClasses(broker, svcs)
-	if err != nil {
-		return err
-	}
-	for _, sClass := range sClasses {
+	for _, svc := range svcs {
+		sClass := translateServiceClass(broker, svc)
 		if err := createServiceClass(sClass); err != nil {
 			return err
 		}
