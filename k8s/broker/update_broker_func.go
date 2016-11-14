@@ -9,7 +9,7 @@ import (
 // UpdateBrokerFunc is the function that can update a broker
 type UpdateBrokerFunc func(*data.Broker) (*data.Broker, error)
 
-// NewK8sWatchBrokerFunc returns a WatchBrokerFunc backed by a Kubernetes client
+// NewK8sUpdateBrokerFunc returns an UpdateBrokerFunc backed by a Kubernetes client
 func NewK8sUpdateBrokerFunc(restIface rest.Interface) UpdateBrokerFunc {
 	return func(newBroker *data.Broker) (*data.Broker, error) {
 		url := restutil.AbsPath(
