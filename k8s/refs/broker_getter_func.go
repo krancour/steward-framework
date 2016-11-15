@@ -14,11 +14,14 @@ type BrokerGetterFunc func(api.ObjectReference) (*data.Broker, error)
 func NewK8sBrokerGetterFunc(restIface rest.Interface) BrokerGetterFunc {
 	return func(ref api.ObjectReference) (*data.Broker, error) {
 		ret := new(data.Broker)
-		url := restutil.AbsPath(
-			restutil.APIVersionBase,
-			restutil.APIVersion,
-			false,
-			ref.Namespace,
+		url := append(
+			restutil.AbsPath(
+				restutil.APIVersionBase,
+				restutil.APIVersion,
+				false,
+				ref.Namespace,
+				data.BrokerKindPlural,
+			),
 			ref.Name,
 		)
 		if err := restIface.Get().AbsPath(url...).Do().Into(ret); err != nil {

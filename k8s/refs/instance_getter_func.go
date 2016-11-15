@@ -14,13 +14,17 @@ type InstanceGetterFunc func(api.ObjectReference) (*data.Instance, error)
 func NewK8sInstanceGetterFunc(restIface rest.Interface) InstanceGetterFunc {
 	return func(ref api.ObjectReference) (*data.Instance, error) {
 		ret := new(data.Instance)
-		url := restutil.AbsPath(
-			restutil.APIVersionBase,
-			restutil.APIVersion,
-			false,
-			ref.Namespace,
+		url := append(
+			restutil.AbsPath(
+				restutil.APIVersionBase,
+				restutil.APIVersion,
+				false,
+				ref.Namespace,
+				data.InstanceKindPlural,
+			),
 			ref.Name,
 		)
+
 		if err := restIface.Get().AbsPath(url...).Do().Into(ret); err != nil {
 			return nil, err
 		}

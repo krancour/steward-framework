@@ -15,11 +15,14 @@ type ServiceClassGetterFunc func(api.ObjectReference) (*data.ServiceClass, error
 func NewK8sServiceClassGetterFunc(restIface rest.Interface) ServiceClassGetterFunc {
 	return func(ref api.ObjectReference) (*data.ServiceClass, error) {
 		ret := new(data.ServiceClass)
-		url := restutil.AbsPath(
-			restutil.APIVersionBase,
-			restutil.APIVersion,
-			false,
-			ref.Namespace,
+		url := append(
+			restutil.AbsPath(
+				restutil.APIVersionBase,
+				restutil.APIVersion,
+				false,
+				ref.Namespace,
+				data.ServiceClassKindPlural,
+			),
 			ref.Name,
 		)
 		if err := restIface.Get().AbsPath(url...).Do().Into(ret); err != nil {
