@@ -31,3 +31,14 @@ func NewK8sInstanceGetterFunc(restIface rest.Interface) InstanceGetterFunc {
 		return ret, nil
 	}
 }
+
+// NewFakeInstanceGetterFunc returns a fake InstanceGetterFunc. If retErr is non-nil, it always returns
+// (nil, retErr). Otherwise returns (inst, nil)
+func NewFakeInstanceGetterFunc(inst *data.Instance, retErr error) InstanceGetterFunc {
+	return func(api.ObjectReference) (*data.Instance, error) {
+		if retErr != nil {
+			return nil, retErr
+		}
+		return inst, nil
+	}
+}

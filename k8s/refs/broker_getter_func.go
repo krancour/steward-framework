@@ -30,3 +30,14 @@ func NewK8sBrokerGetterFunc(restIface rest.Interface) BrokerGetterFunc {
 		return ret, nil
 	}
 }
+
+// NewFakeBrokerGetterFunc returns a fake BrokerGetterFunc. If retErr is non-nil, it always returns
+// (nil, retErr). Otherwise returns (broker, nil)
+func NewFakeBrokerGetterFunc(broker *data.Broker, retErr error) BrokerGetterFunc {
+	return func(api.ObjectReference) (*data.Broker, error) {
+		if retErr != nil {
+			return nil, retErr
+		}
+		return broker, nil
+	}
+}

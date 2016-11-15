@@ -31,3 +31,14 @@ func NewK8sServiceClassGetterFunc(restIface rest.Interface) ServiceClassGetterFu
 		return ret, nil
 	}
 }
+
+// NewFakeServiceClassGetterFunc returns a fake ServiceClassGetterFunc. If retErr is non-nil,
+// it always returns (nil, retErr). Otherwise returns (svcClass, nil)
+func NewFakeServiceClassGetterFunc(svcClass *data.ServiceClass, retErr error) ServiceClassGetterFunc {
+	return func(api.ObjectReference) (*data.ServiceClass, error) {
+		if retErr != nil {
+			return nil, retErr
+		}
+		return svcClass, nil
+	}
+}
