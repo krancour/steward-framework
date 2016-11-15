@@ -1,5 +1,5 @@
-hash: 95f4f92054131b0e95f824162d8e4c86d448e1d77972db329c11b41884db0031
-updated: 2016-11-08T13:37:31.820783935-05:00
+hash: f1c767d7a5952fad624dc01057d80d1bf776757a4a41f0e59884e7f54a72882b
+updated: 2016-11-08T14:13:44.935558733-08:00
 imports:
 - name: github.com/arschles/assert
   version: bb58b908265b5931732079df03f2818bf2167ba0
@@ -259,8 +259,4 @@ imports:
   - tools/clientcmd/api/v1
   - tools/metrics
   - transport
-- name: k8s.io/kubernetes
-  version: 31fbb771a2872752b90c324987e59dbbc19fa909
-  subpackages:
-  - pkg/util/ratelimit
 testImports: []

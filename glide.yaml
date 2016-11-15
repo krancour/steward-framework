@@ -21,6 +21,7 @@ ignore:
   - code.google.com/p/go-charset
   - k8s.io/heapster
   - golang.org/x/sys
+  - k8s.io/kubernetes
 import:
 - package: github.com/arschles/assert
 - package: github.com/juju/loggo
