@@ -121,7 +121,7 @@ func handleAddBinding(
 			Name:      binding.Spec.SecretName,
 			Namespace: binding.Namespace,
 		},
-		Data: framework.ResponseCredsToSecretData(bindResp.Creds),
+		Data: bindResponseCredsToSecretData(bindResp.Creds),
 	}
 
 	if _, err := secretWriter(secret); err != nil {
