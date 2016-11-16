@@ -20,11 +20,11 @@ const (
 )
 
 type Binding struct {
-	unversioned.TypeMeta
-	api.ObjectMeta
+	unversioned.TypeMeta `json:",inline"`
+	api.ObjectMeta       `json:"metadata,omitempty"`
 
-	Spec   BindingSpec
-	Status BindingStatus
+	Spec   BindingSpec   `json:"spec"`
+	Status BindingStatus `json:"status"`
 }
 
 type BindingSpec struct {
@@ -35,5 +35,5 @@ type BindingSpec struct {
 }
 
 type BindingStatus struct {
-	State BindingState
+	State BindingState `json:"state"`
 }
